@@ -10,5 +10,5 @@ Proje iki aşamalı olarak gerçekleştirilmiştir: İlk aşamada, **BRENDA** ve
 ### Anahtar Kelimeler  
 **Deniz Plastik Kirliliği, Makine Öğrenimi, Enzim Mühendisliği, Yönlendirilmiş Evrim.**
 
-**Hazırlayan: Gökçe Ceyda Bilgin**
+**Hazırlayan: Gökçe Ceyda Bilgin /**
 **Bursa Halil İnalcık Bilim ve Sanat Merkezi**
