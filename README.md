@@ -5,6 +5,7 @@ Her yıl okyanuslara karışan milyonlarca ton plastik, ekosistemler üzerinde c
 
 ![image](https://github.com/user-attachments/assets/fead1a4b-571b-4550-bea8-d1a4bfd7cc4e)
 
+**Şekil 1:**
 *Thermobifida fusca Cutinase*
 
 Proje iki aşamalı olarak gerçekleştirilmiştir: İlk aşamada, **BRENDA** veritabanından alınan **2643 enzim verisi** kullanılarak makine öğrenimi destekli tahmin modelleri eğitilmiştir. **Lojistik Regresyon, Doğrusal Regresyon** ve **Rastgele Orman** algoritmaları karşılaştırılmış, optimum sıcaklık tahmininde en iyi performansı gösteren **Rastgele Orman** yöntemi seçilmiştir. İkinci aşamada, **yönlendirilmiş evrim** (*in silico*) uygulanarak enzimin mutasyonları tasarlanmış ve her iterasyonda düşük sıcaklıkta çalışan en başarılı mutant belirlenmiştir.  
