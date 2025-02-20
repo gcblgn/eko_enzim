@@ -8,7 +8,7 @@ Proje iki aşamalı olarak gerçekleştirilmiştir: İlk aşamada, **BRENDA** ve
 **35 iterasyon** sonunda, enzimin optimum sıcaklığı **40.35°C’den 24.005°C’ye** düşürülmüş ve yeni bir **“Eko-Enzim”** tasarlanmıştır. Bu sonuçlar, geliştirilen enzimin **deniz ortamındaki düşük sıcaklıklarda PET plastiklerini parçalayabilen ilk enzim** olduğunu göstermektedir. Gelecekte, bu enzimin **siyanobakterilerde üretilerek biyolojik geri dönüşüm** süreçlerinde kullanılması planlanmaktadır.  
 
 ### Anahtar Kelimeler  
-### **Deniz Plastik Kirliliği, Makine Öğrenimi, Enzim Mühendisliği, Yönlendirilmiş Evrim.**
+**Deniz Plastik Kirliliği, Makine Öğrenimi, Enzim Mühendisliği, Yönlendirilmiş Evrim.**
 
-**Hazırlayan: Gökçe Ceyda Bilgin /**
-**Bursa Halil İnalcık Bilim ve Sanat Merkezi**
+** Hazırlayan: Gökçe Ceyda Bilgin /**
+** Bursa Halil İnalcık Bilim ve Sanat Merkezi**
