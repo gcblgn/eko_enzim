@@ -1,5 +1,4 @@
 # Makine Öğrenimi Destekli Yönlendirilmiş Evrim ile Deniz Plastiklerini Parçalayan Eko-Enzim Geliştirilmesi
-# Makine Öğrenimi Destekli Yönlendirilmiş Evrim ile Deniz Plastiklerini Parçalayan Eko-Enzim Geliştirilmesi  
 
 ## Özet  
 Her yıl okyanuslara karışan milyonlarca ton plastik, ekosistemler üzerinde ciddi tehdit oluşturmaktadır. Bu soruna biyoteknolojik bir çözüm sunmak amacıyla, **makine öğrenmesi destekli yönlendirilmiş evrim** yöntemi kullanılarak, plastikleri düşük sıcaklıklarda parçalayabilen bir enzim geliştirilmiştir. Çalışmada, *Thermobifida fusca Cutinase* enziminin optimum çalışma sıcaklığı, okyanus yüzeyi sıcaklıklarına (20-25°C) uyarlanarak deniz plastiklerinin biyolojik olarak parçalanması hedeflenmiştir.  
