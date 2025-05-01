@@ -1,0 +1,190 @@
+import pandas as pd
+import time
+from Bio.SeqUtils.ProtParam import ProteinAnalysis
+from collections import Counter
+
+# Standart amino asitler
+amino_acids = 'ACDEFGHIKLMNPQRSTVWY'
+
+# Tüm olası dipeptitler (400 adet)
+all_dipeptides = [a+b for a in amino_acids for b in amino_acids]
+
+def load_data(file_path):
+    """
+    Enzim verilerinin bulunduğu Excel dosyasını yükler
+    """
+    try:
+        df = pd.read_excel(file_path)
+        print(f"Dosya başarıyla okundu. {len(df)} satır veri bulundu.")
+        return df
+    except Exception as e:
+        print(f"Dosya okuma hatası: {e}")
+        exit()
+
+def calculate_protein_features(df):
+    """
+    Protein özelliklerini hesaplar ve DataFrame'e ekler
+    """
+    # Yeni özelliklerin saklanacağı sözlükler
+    feature_data = {
+        'aromatic_content': [],
+        'hydrophobicity': [],
+        'instability_index': [],
+        'charge': [],
+        'length': [],
+        'molecular_weight': [],
+        'aliphatic_index': [],
+        'charge_density': [],
+        'boman_index': [],
+        'pi': []
+    }
+
+    # Amino asit frekansları için sözlükler
+    for aa in amino_acids:
+        feature_data[f'aa_{aa}'] = []
+
+    # Dipeptit frekansları için sözlükler
+    dipeptide_data = {f'dp_{dipeptide}': [] for dipeptide in all_dipeptides}
+
+    # Protein özelliklerini hesapla
+    total_rows = len(df)
+    for idx, row in df.iterrows():
+        if idx % 10 == 0:
+            print(f"İşleniyor: {idx+1}/{total_rows}")
+            
+        sequence = row['sequence'].strip()
+        
+        # Standart olmayan amino asitleri temizle
+        clean_sequence = ''.join(aa for aa in sequence if aa in amino_acids)
+        
+        # Eğer temizlenmiş dizi boşsa veya çok kısaysa atla
+        if len(clean_sequence) < 5:
+            print(f"ID: {row['id']} - Protein dizisi çok kısa veya geçerli amino asitleri içermiyor: {sequence}")
+            # Boş değerlerle doldur
+            for key in feature_data:
+                feature_data[key].append(0.0 if key != 'pi' else 7.0)  # pH 7.0 default for pI
+            
+            for dipeptide in all_dipeptides:
+                dipeptide_data[f'dp_{dipeptide}'].append(0.0)
+            continue
+            
+        try:
+            # BioPython'daki ProteinAnalysis ile protein özelliklerini hesapla
+            protein_analysis = ProteinAnalysis(clean_sequence)
+            
+            # Amino asit frekansları
+            aa_count = protein_analysis.count_amino_acids()
+            total_len = len(clean_sequence)
+            
+            # Amino asit yüzdelerini hesapla
+            for aa in amino_acids:
+                count = aa_count.get(aa, 0)
+                percent = (count / total_len) * 100 if total_len > 0 else 0
+                feature_data[f'aa_{aa}'].append(percent)
+            
+            # Aromatik içerik (F, W, Y)
+            aromatic_content = 0
+            for aa in 'FWY':
+                aromatic_content += feature_data[f'aa_{aa}'][-1]
+            feature_data['aromatic_content'].append(aromatic_content)
+            
+            # Hidrofobisite (Kyte-Doolittle ölçeğine göre)
+            feature_data['hydrophobicity'].append(protein_analysis.gravy())
+            
+            # Kararsızlık indeksi
+            feature_data['instability_index'].append(protein_analysis.instability_index())
+            
+            # Yük (pH 7'de)
+            feature_data['charge'].append(protein_analysis.charge_at_pH(7.0))
+            
+            # Uzunluk
+            feature_data['length'].append(len(clean_sequence))
+            
+            # Moleküler ağırlık
+            feature_data['molecular_weight'].append(protein_analysis.molecular_weight())
+            
+            # Alifatik indeks manuel hesaplama
+            ala_percent = feature_data['aa_A'][-1]
+            val_percent = feature_data['aa_V'][-1]
+            ile_percent = feature_data['aa_I'][-1]
+            leu_percent = feature_data['aa_L'][-1]
+            
+            aliphatic_index = ala_percent + (2.9 * val_percent) + (3.9 * (ile_percent + leu_percent))
+            feature_data['aliphatic_index'].append(aliphatic_index)
+            
+            # Yük yoğunluğu
+            feature_data['charge_density'].append(protein_analysis.charge_at_pH(7.0) / len(clean_sequence))
+            
+            # Boman indeksi
+            aa_scales = {'A': 1.8, 'C': 2.5, 'D': -3.5, 'E': -3.5, 'F': 2.8, 
+                        'G': -0.4, 'H': -3.2, 'I': 4.5, 'K': -3.9, 'L': 3.8, 
+                        'M': 1.9, 'N': -3.5, 'P': -1.6, 'Q': -3.5, 'R': -4.5, 
+                        'S': -0.8, 'T': -0.7, 'V': 4.2, 'W': -0.9, 'Y': -1.3}
+            
+            boman_sum = sum(aa_scales.get(aa, 0) for aa in clean_sequence)
+            boman_index = boman_sum / len(clean_sequence) if len(clean_sequence) > 0 else 0
+            feature_data['boman_index'].append(boman_index)
+            
+            # İzoelektrik nokta (pI)
+            feature_data['pi'].append(protein_analysis.isoelectric_point())
+            
+            # Dipeptit frekansları
+            dipeptide_counts = {}
+            for i in range(len(clean_sequence) - 1):
+                dipeptide = clean_sequence[i:i+2]
+                dipeptide_counts[dipeptide] = dipeptide_counts.get(dipeptide, 0) + 1
+            
+            total_dipeptides = len(clean_sequence) - 1
+            
+            # Tüm olası dipeptitler için frekans hesapla
+            for dipeptide in all_dipeptides:
+                freq = (dipeptide_counts.get(dipeptide, 0) / total_dipeptides) if total_dipeptides > 0 else 0
+                dipeptide_data[f'dp_{dipeptide}'].append(freq)
+                
+        except Exception as e:
+            print(f"Hata oluştu (ID: {row['id']}): {e}")
+            # Hata durumunda boş değerlerle doldur
+            for key in feature_data:
+                feature_data[key].append(0.0 if key != 'pi' else 7.0)
+            
+            for dipeptide in all_dipeptides:
+                dipeptide_data[f'dp_{dipeptide}'].append(0.0)
+
+    # Tüm özellik verilerini içeren DataFrameler oluştur
+    features_df = pd.DataFrame(feature_data)
+    dipeptides_df = pd.DataFrame(dipeptide_data)
+    
+    # Orijinal veri çerçevesi ile birleştir
+    result_df = pd.concat([df, features_df, dipeptides_df], axis=1)
+    
+    return result_df
+
+def main():
+    # Excel dosyasını oku
+    file_path = "enzim_data.xlsx"
+    df = load_data(file_path)
+    
+    # Protein özelliklerini hesapla
+    print("Protein özellikleri hesaplanıyor...")
+    enriched_df = calculate_protein_features(df)
+    
+    # Sonuçları kaydet
+    output_path = "enzim_data_tum_bilgiler.csv"
+    enriched_df.to_csv(output_path, index=False, float_format='%.3f')
+    print(f"Zenginleştirilmiş veri {output_path} dosyasına kaydedildi.")
+    
+    # Özellik sayılarını kontrol et ve göster
+    aa_features = len([col for col in enriched_df.columns if col.startswith('aa_')])
+    dipeptide_features = len([col for col in enriched_df.columns if col.startswith('dp_')])
+    protein_features = 10  # aromatic_content, hydrophobicity, instability_index, vs.
+    optimum_growth_temperature = 1
+    
+    print(f"\nToplam özellik sayıları:")
+    print(f"- Küresel protein özellikleri: {protein_features}")
+    print(f"- Amino asit frekansları: {aa_features}")
+    print(f"- Dipeptit frekansları: {dipeptide_features}")
+    print(f"- Optimum Büyüme Sıcaklığı: {optimum_growth_temperature}")
+    print(f"Toplam: {protein_features + aa_features + dipeptide_features+optimum_growth_temperature}")
+
+if __name__ == "__main__":
+    main()
