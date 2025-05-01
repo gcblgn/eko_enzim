@@ -8,9 +8,9 @@ Her yıl okyanuslara karışan milyonlarca ton plastik, ekosistemler üzerinde c
 **Şekil 1:**
 *Thermobifida fusca Cutinase*
 
-Proje iki aşamalı olarak gerçekleştirilmiştir: İlk aşamada, **BRENDA** veritabanından alınan **2643 enzim verisi** kullanılarak makine öğrenimi destekli tahmin modelleri eğitilmiştir. **Lojistik Regresyon, Doğrusal Regresyon** ve **Rastgele Orman** algoritmaları karşılaştırılmış, optimum sıcaklık tahmininde en iyi performansı gösteren **Rastgele Orman** yöntemi seçilmiştir. İkinci aşamada, **yönlendirilmiş evrim** (*in silico*) uygulanarak enzimin mutasyonları tasarlanmış ve her iterasyonda düşük sıcaklıkta çalışan en başarılı mutant belirlenmiştir.  
+Proje iki aşamalı olarak gerçekleştirilmiştir: İlk aşamada, **BRENDA** veritabanından alınan **2676 enzim verisi** kullanılarak makine öğrenimi destekli tahmin modelleri eğitilmiştir. **Lojistik Regresyon, Lassolu Doğrusal Regresyon, XGBoost, LightGBM** ve **Rastgele Orman** algoritmaları karşılaştırılmış, optimum sıcaklık tahmininde en iyi performansı gösteren **LightGBM** yöntemi seçilmiştir. İkinci aşamada, **yönlendirilmiş evrim** (*in silico*) uygulanarak enzimin mutasyonları tasarlanmış ve her iterasyonda düşük sıcaklıkta çalışan en başarılı mutant belirlenmiştir.  
 
-**35 iterasyon** sonunda, enzimin optimum sıcaklığı **40.35°C’den 24.005°C’ye** düşürülmüş ve yeni bir **“Eko-Enzim”** tasarlanmıştır. Bu sonuçlar, geliştirilen enzimin **deniz ortamındaki düşük sıcaklıklarda PET plastiklerini parçalayabilen ilk enzim** olduğunu göstermektedir. Gelecekte, bu enzimin **siyanobakterilerde üretilerek biyolojik geri dönüşüm** süreçlerinde kullanılması planlanmaktadır.  
+**Ortalama 15 iterasyon** sonunda, enzimin optimum sıcaklığı **60.31°C’den 24.005°C’ye** düşürülmüş ve yeni bir **“Eko-Enzim”** tasarlanmıştır. Bu sonuçlar, geliştirilen enzimin **deniz ortamındaki düşük sıcaklıklarda PET plastiklerini parçalayabilen ilk enzim** olduğunu göstermektedir. Gelecekte, bu enzimin **siyanobakterilerde üretilerek biyolojik geri dönüşüm** süreçlerinde kullanılması planlanmaktadır.  
 
 ### Anahtar Kelimeler  
 **Deniz Plastik Kirliliği, Makine Öğrenimi, Enzim Mühendisliği, Yönlendirilmiş Evrim.**
